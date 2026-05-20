@@ -8,6 +8,7 @@ public class FleetManager {
     //Constructor
     public FleetManager(String agencyName){
         this.agencyName = agencyName;
+        fleet = new ArrayList<>();
     }
 
     //Getters
@@ -23,7 +24,7 @@ public class FleetManager {
     //Methods
     public void addVehicle(Vehicle v){
         for (Vehicle vehicle: fleet)
-            if (v.getLicensePlate().trim().equalsIgnoreCase(v.getLicensePlate())){
+            if (vehicle.getLicensePlate().trim().equalsIgnoreCase(v.getLicensePlate())){
                 System.out.println("Duplicate Licence Plate");
                 return;
             }

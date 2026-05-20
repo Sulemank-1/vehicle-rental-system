@@ -20,5 +20,15 @@ public class FleetManager {
         this.agencyName = agencyName;
     }
 
+    //Methods
+    public void addVehicle(Vehicle v){
+        for (Vehicle vehicle: fleet)
+            if (v.getLicensePlate().trim().equalsIgnoreCase(v.getLicensePlate())){
+                System.out.println("Duplicate Licence Plate");
+                return;
+            }
+        fleet.add(v);
+    }
+
 
 }

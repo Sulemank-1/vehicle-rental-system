@@ -71,4 +71,9 @@ public class FleetManager {
                 sum += vehicle.getDailyRate();
         return sum;
     }
+
+    public void displayFleetStatus(){
+        for (Vehicle vehicle: fleet)
+            System.out.println(vehicle);
+    }
 }

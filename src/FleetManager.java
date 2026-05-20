@@ -30,5 +30,22 @@ public class FleetManager {
         fleet.add(v);
     }
 
+    public boolean processRental(String plate) {
+        for (Vehicle vehicle : fleet) {
+            if (vehicle.getLicensePlate().trim().equalsIgnoreCase(plate)) {
+                if (!vehicle.isRented()) {
+                    vehicle.rentVehicle();
+                    System.out.println("Success: Vehicle " + plate + " has been checked out.");
+                    return true;
+                } else {
+                    System.out.println("Vehicle is already rented out.");
+                    return false;
+                }
+            }
+        }
+        System.out.println("License plate not found in fleet records.");
+        return false;
+    }
+
 
 }

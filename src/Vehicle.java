@@ -1,4 +1,4 @@
-public abstract class Vehicle {
+public abstract class Vehicle implements Comparable<Vehicle>{
     //Data Fields
     private String licensePlate;
     private String model;
@@ -60,6 +60,11 @@ public abstract class Vehicle {
 
     @Override
     public String toString(){
-        return "Licence Plate: " + getLicensePlate() + "| Model: " + getModel() + "| Daily Rate: " + getDailyRate() + "| Rented Status " + ((isRented()) ? "Rented" : "Not Rented");
+        return "Licence Plate: " + getLicensePlate() + "| Model: " + getModel() + "| Daily Rate: " + getDailyRate() + "| Rented Status " + (isRented() ? "Rented" : "Not Rented");
+    }
+
+    @Override
+    public int compareTo(Vehicle o) {
+        return Double.compare(o.getDailyRate(), getDailyRate());
     }
 }

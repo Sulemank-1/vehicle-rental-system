@@ -64,5 +64,11 @@ public class FleetManager {
         return false;
     }
 
-
+    public double calculateTotalFleetValue(){
+        double sum = 0.0;
+        for (Vehicle vehicle: fleet)
+            if (vehicle.isRented())
+                sum += vehicle.getDailyRate();
+        return sum;
+    }
 }

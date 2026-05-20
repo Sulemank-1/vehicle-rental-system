@@ -1,4 +1,4 @@
-public class Vehicle {
+public abstract class Vehicle {
     //Data Fields
     private String licensePlate;
     private String model;
@@ -55,6 +55,8 @@ public class Vehicle {
     public void returnVehicle(){
         isRented = false;
     }
+
+    public abstract double calculateRentalCost(int days);
 
     @Override
     public String toString(){

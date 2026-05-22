@@ -3,7 +3,7 @@ public class Car extends Vehicle{
     private boolean hasGPS;
 
     //Constructor
-    public Car(String licensePlate, String model, double dailyRate, boolean isRented, boolean hasGPS){
+    public Car(String licensePlate, String model, double dailyRate, boolean isRented, boolean hasGPS) throws InvalidRentalException{
         super(licensePlate, model, dailyRate, isRented);
         this.hasGPS = hasGPS;
     }

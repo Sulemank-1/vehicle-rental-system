@@ -3,8 +3,10 @@ public class Truck extends Vehicle{
     private double cargoCapacity;
 
     //Constructor
-    public Truck(String licensePlate, String model, double dailyRate, boolean isRented, double cargoCapacity){
+    public Truck(String licensePlate, String model, double dailyRate, boolean isRented, double cargoCapacity)throws InvalidRentalException{
         super(licensePlate, model, dailyRate, isRented);
+        if (cargoCapacity <= 0 )
+            throw new InvalidRentalException("Invalid cargo capacity");
         this.cargoCapacity = cargoCapacity;
     }
 

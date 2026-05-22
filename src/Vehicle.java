@@ -6,7 +6,9 @@ public abstract class Vehicle implements Comparable<Vehicle>{
     private boolean isRented;
 
     //Constructor
-    public Vehicle(String licensePlate, String model, double dailyRate, boolean isRented){
+    public Vehicle(String licensePlate, String model, double dailyRate, boolean isRented) throws InvalidRentalException{
+        if (dailyRate <= 0)
+            throw new InvalidRentalException("Invalid daily rate");
         this.licensePlate = licensePlate;
         this.model = model;
         this.dailyRate = dailyRate;

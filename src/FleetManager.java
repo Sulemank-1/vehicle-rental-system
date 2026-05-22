@@ -1,4 +1,9 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class FleetManager {
     //Data Fields
@@ -77,4 +82,21 @@ public class FleetManager {
         for (Vehicle vehicle: fleet)
             System.out.println(vehicle);
     }
+
+    public void saveFleet(String filename){
+        try (PrintWriter output = new PrintWriter(filename)){
+            for (Vehicle v: fleet){
+                if (v instanceof Car)
+                    output.println("CAR," + v.getLicensePlate() + "," + v.getModel() + "," + v.getDailyRate() + "," + (v.isRented() ? "Rented":"Not Rented") + "," +  (((Car) v).getHasGPS()? "Has GPS": "Doesn't have GPS"));
+                else if (v instanceof Truck)
+                    output.println("TRUCK," + v.getLicensePlate() + "," + v.getModel() + "," + v.getDailyRate() + "," + (v.isRented() ? "Rented":"Not Rented") + "," + ((Truck) v).getCargoCapacity());
+            }
+        }catch (IOException ex){
+            System.out.println("Data couldn't be saved in file");
+        }
+    }
+
+
+
+
 }

@@ -96,7 +96,44 @@ public class FleetManager {
         }
     }
 
+    public void loadFleet(String filename) {
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("No existing file.");
+            return;
+        }
 
+        try (Scanner input = new Scanner(file)) {
+            while (input.hasNextLine()) {
+                String line = input.nextLine();
+                String[] tokens = line.split(",");
+
+                String type = tokens[0];
+                String plate = tokens[1];
+                String model = tokens[2];
+                double rate = Double.parseDouble(tokens[3]);
+                boolean isRented = Boolean.parseBoolean(tokens[4]);
+
+                try {
+                    switch (type) {
+                        case "CAR":
+                            boolean hasGps = Boolean.parseBoolean(tokens[5]);
+                            addVehicle(new Car(plate, model, rate, isRented, hasGps));
+                            break;
+                        case "TRUCK":
+                            double capacity = Double.parseDouble(tokens[5]);
+                            addVehicle(new Truck(plate, model, rate, isRented, capacity));
+                            break;
+                    }
+                } catch (InvalidRentalException e) {
+                    System.out.println("Corrupted Log Line Bypassed: " + e.getMessage());
+                }
+            }
+            System.out.println("Fleet records safely loaded from database.");
+        } catch (Exception e) {
+            System.out.println("System Crash: Fatal parsing failure while extracting fleet log details. " + e.getMessage());
+        }
+    }
 
 
 }

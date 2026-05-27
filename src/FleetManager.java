@@ -1,9 +1,5 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class FleetManager {
     //Data Fields
@@ -84,13 +80,10 @@ public class FleetManager {
     }
 
     public void saveFleet(String filename){
-        try (PrintWriter output = new PrintWriter(filename)){
-            for (Vehicle v: fleet){
-                if (v instanceof Car)
-                    output.println("CAR," + v.getLicensePlate() + "," + v.getModel() + "," + v.getDailyRate() + "," + (v.isRented() ? "Rented":"Not Rented") + "," +  (((Car) v).getHasGPS()? "Has GPS": "Doesn't have GPS"));
-                else if (v instanceof Truck)
-                    output.println("TRUCK," + v.getLicensePlate() + "," + v.getModel() + "," + v.getDailyRate() + "," + (v.isRented() ? "Rented":"Not Rented") + "," + ((Truck) v).getCargoCapacity());
-            }
+        try (
+                ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))
+        ){
+            output.writeObject(fleet);
         }catch (IOException ex){
             System.out.println("Data couldn't be saved in file");
         }
@@ -99,41 +92,22 @@ public class FleetManager {
     public void loadFleet(String filename) {
         File file = new File(filename);
         if (!file.exists()) {
-            System.out.println("No existing file.");
+            System.out.println("No existing fleet logs.");
             return;
         }
 
-        try (Scanner input = new Scanner(file)) {
-            while (input.hasNextLine()) {
-                String line = input.nextLine();
-                String[] tokens = line.split(",");
-
-                String type = tokens[0];
-                String plate = tokens[1];
-                String model = tokens[2];
-                double rate = Double.parseDouble(tokens[3]);
-                boolean isRented = Boolean.parseBoolean(tokens[4]);
-
-                try {
-                    switch (type) {
-                        case "CAR":
-                            boolean hasGps = Boolean.parseBoolean(tokens[5]);
-                            addVehicle(new Car(plate, model, rate, isRented, hasGps));
-                            break;
-                        case "TRUCK":
-                            double capacity = Double.parseDouble(tokens[5]);
-                            addVehicle(new Truck(plate, model, rate, isRented, capacity));
-                            break;
-                    }
-                } catch (InvalidRentalException e) {
-                    System.out.println("Corrupted Log Line Bypassed: " + e.getMessage());
-                }
-            }
-            System.out.println("Fleet records safely loaded from database.");
-        } catch (Exception e) {
-            System.out.println("System Crash: Fatal parsing failure while extracting fleet log details. " + e.getMessage());
+        try (
+                ObjectInputStream input = new ObjectInputStream(
+                        new BufferedInputStream(new FileInputStream(file)))
+        ) {
+            fleet = (ArrayList<Vehicle>) input.readObject();
+            System.out.println("Fleet logs loaded");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Missing class definition blueprint during object reconstruction.");
+        } catch (StreamCorruptedException ex) {
+            System.out.println("File has been manually tampered with or corrupted! Access Blocked.");
+        } catch (IOException ex) {
+            System.out.println("Error reading file. " + ex.getMessage());
         }
     }
-
-
 }

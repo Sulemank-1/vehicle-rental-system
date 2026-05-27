@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         FleetManager manager = new FleetManager("Vehicle Rental");
-        final String FLEET_FILE = "fleet.csv";
+        final String FLEET_FILE = "fleet.dat";
 
         manager.loadFleet(FLEET_FILE);
 

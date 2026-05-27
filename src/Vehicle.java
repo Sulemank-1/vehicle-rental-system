@@ -1,4 +1,6 @@
-public abstract class Vehicle implements Comparable<Vehicle>{
+import java.io.Serializable;
+
+public abstract class Vehicle implements Serializable, Comparable<Vehicle>{
     //Data Fields
     private String licensePlate;
     private String model;

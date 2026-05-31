@@ -23,10 +23,9 @@ public class Main {
 
             int choice;
             try {
-                choice = input.nextInt();
-            } catch (InputMismatchException e) {
-                System.out.println("Choose a valid menu index.");
-                input.nextLine();
+                choice = Integer.parseInt(input.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Choose a valid menu index number.");
                 continue;
             }
 
@@ -34,14 +33,17 @@ public class Main {
                 case 1:
                     try {
                         System.out.print("Enter Plate: ");
-                        String plate = input.next();
+                        String plate = input.nextLine().trim();
+
                         System.out.print("Enter Model: ");
-                        input.nextLine();
-                        String model = input.nextLine();
+                        String model = input.nextLine().trim();
+
                         System.out.print("Enter Daily Rate ($): ");
-                        double rate = input.nextDouble();
+                        double rate = Double.parseDouble(input.nextLine().trim());
+
                         System.out.print("Include GPS Integration? (true/false): ");
-                        boolean gps = input.nextBoolean();
+                        boolean gps = Boolean.parseBoolean(input.nextLine().trim());
+
 
                         manager.addVehicle(new Car(plate, model, rate, false, gps));
                         System.out.println("Success: Car unit added to fleet.");
@@ -56,14 +58,13 @@ public class Main {
                 case 2:
                     try {
                         System.out.print("Enter Plate: ");
-                        String plate = input.next();
+                        String plate = input.nextLine().trim();
                         System.out.print("Enter Model: ");
-                        input.nextLine();
-                        String model = input.nextLine();
+                        String model = input.nextLine().trim();
                         System.out.print("Enter Daily Rate ($): ");
-                        double rate = input.nextDouble();
+                        double rate = Double.parseDouble(input.nextLine().trim());
                         System.out.print("Enter Cargo Capacity Limit (Tons): ");
-                        double tons = input.nextDouble();
+                        double tons = Double.parseDouble(input.nextLine().trim());
 
                         manager.addVehicle(new Truck(plate, model, rate, false, tons));
                         System.out.println("Success: Truck unit added to fleet.");
@@ -82,14 +83,17 @@ public class Main {
 
                 case 4:
                     System.out.print("Enter license plate: ");
-                    String checkoutPlate = input.next();
-                    manager.processRental(checkoutPlate);
+                    String checkoutPlate = input.nextLine().trim();
+                    if (manager.processRental(checkoutPlate))
+                        System.out.println("Vehicle checked out");
                     break;
 
                 case 5:
                     System.out.print("Enter license plate: ");
-                    String returnPlate = input.next();
-                    manager.processReturn(returnPlate);
+                    String returnPlate = input.next().trim();
+                    if (manager.processReturn(returnPlate)){
+                        System.out.println("Vehicle checked in");
+                    }
                     break;
 
                 case 6:

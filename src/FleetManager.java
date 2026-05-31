@@ -80,34 +80,15 @@ public class FleetManager {
     }
 
     public void saveFleet(String filename){
-        try (
-                ObjectOutputStream output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))
-        ){
-            output.writeObject(fleet);
-        }catch (IOException ex){
-            System.out.println("Data couldn't be saved in file");
-        }
+        StorageEngine.saveData(filename, fleet);
     }
 
     public void loadFleet(String filename) {
-        File file = new File(filename);
-        if (!file.exists()) {
-            System.out.println("No existing fleet logs.");
-            return;
-        }
-
-        try (
-                ObjectInputStream input = new ObjectInputStream(
-                        new BufferedInputStream(new FileInputStream(file)))
-        ) {
-            fleet = (ArrayList<Vehicle>) input.readObject();
-            System.out.println("Fleet logs loaded");
-        } catch (ClassNotFoundException ex) {
-            System.out.println("Missing class definition blueprint during object reconstruction.");
-        } catch (StreamCorruptedException ex) {
-            System.out.println("File has been manually tampered with or corrupted! Access Blocked.");
-        } catch (IOException ex) {
-            System.out.println("Error reading file. " + ex.getMessage());
+        fleet = StorageEngine.loadData(filename);
+        if (!fleet.isEmpty()) {
+            System.out.println("Fleet records successfully loaded into application.");
+        } else {
+            System.out.println("No fleet logs found");
         }
     }
 }

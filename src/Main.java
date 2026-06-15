@@ -1,10 +1,9 @@
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        FleetManager manager = new FleetManager("Vehicle Rental");
+        FleetManager manager = new FleetManager("Arcade Vehicle Rental");
         final String FLEET_FILE = "fleet.dat";
 
         manager.loadFleet(FLEET_FILE);
@@ -12,8 +11,8 @@ public class Main {
         boolean running = true;
         while (running) {
             System.out.println("\n=== " + manager.getAgencyName() + " Management ===");
-            System.out.println("1. Provision New Car");
-            System.out.println("2. Provision New Truck");
+            System.out.println("1. Add New Car to fleet");
+            System.out.println("2. Add New Truck to fleet");
             System.out.println("3. Display Full Fleet Inventory Status");
             System.out.println("4. Check Out/Rent vehicle via License Plate");
             System.out.println("5. Check In/Return vehicle via License Plate");
@@ -48,7 +47,7 @@ public class Main {
                         manager.addVehicle(new Car(plate, model, rate, false, gps));
                         System.out.println("Success: Car unit added to fleet.");
                     } catch (InvalidRentalException e) {
-                        System.out.println("Allocation Blocked: " + e.getMessage());
+                        System.out.println("Addition Blocked: " + e.getMessage());
                     } catch (InputMismatchException e) {
                         System.out.println("Typing Format Violation. Operation aborted.");
                         input.nextLine();
@@ -59,17 +58,20 @@ public class Main {
                     try {
                         System.out.print("Enter Plate: ");
                         String plate = input.nextLine().trim();
+
                         System.out.print("Enter Model: ");
                         String model = input.nextLine().trim();
+
                         System.out.print("Enter Daily Rate ($): ");
                         double rate = Double.parseDouble(input.nextLine().trim());
+
                         System.out.print("Enter Cargo Capacity Limit (Tons): ");
                         double tons = Double.parseDouble(input.nextLine().trim());
 
                         manager.addVehicle(new Truck(plate, model, rate, false, tons));
                         System.out.println("Success: Truck unit added to fleet.");
                     } catch (InvalidRentalException e) {
-                        System.out.println("Allocation Blocked: " + e.getMessage());
+                        System.out.println("Addition Blocked: " + e.getMessage());
                     } catch (InputMismatchException e) {
                         System.out.println("Typing Format Violation. Operation aborted.");
                         input.nextLine();
@@ -84,16 +86,18 @@ public class Main {
                 case 4:
                     System.out.print("Enter license plate: ");
                     String checkoutPlate = input.nextLine().trim();
-                    if (manager.processRental(checkoutPlate))
-                        System.out.println("Vehicle checked out");
+
+                    System.out.print("Enter Customer Name: ");
+                    String customerName = input.nextLine().trim();
+
+                    manager.processRental(checkoutPlate, customerName);
                     break;
 
                 case 5:
                     System.out.print("Enter license plate: ");
-                    String returnPlate = input.next().trim();
-                    if (manager.processReturn(returnPlate)){
-                        System.out.println("Vehicle checked in");
-                    }
+                    String returnPlate = input.nextLine().trim();
+
+                    manager.processReturn(returnPlate);
                     break;
 
                 case 6:

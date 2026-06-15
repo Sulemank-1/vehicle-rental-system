@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.*;
 
 public abstract class Vehicle implements Serializable, Comparable<Vehicle>{
     //Data Fields
@@ -6,6 +7,7 @@ public abstract class Vehicle implements Serializable, Comparable<Vehicle>{
     private String model;
     private double dailyRate;
     private boolean isRented;
+    private Queue<String> waitlist;
 
     //Constructor
     public Vehicle(String licensePlate, String model, double dailyRate, boolean isRented) throws InvalidRentalException{
@@ -15,6 +17,7 @@ public abstract class Vehicle implements Serializable, Comparable<Vehicle>{
         this.model = model;
         this.dailyRate = dailyRate;
         this.isRented = isRented;
+        this.waitlist = new LinkedList<>();
     }
 
     //Getters
@@ -32,6 +35,10 @@ public abstract class Vehicle implements Serializable, Comparable<Vehicle>{
 
     public boolean isRented() {
         return isRented;
+    }
+
+    public Queue<String> getWaitlist() {
+        return waitlist;
     }
 
     //Setters
@@ -52,6 +59,14 @@ public abstract class Vehicle implements Serializable, Comparable<Vehicle>{
     }
 
     //Methods
+    public void addToWaitlist(String customerName) {
+        waitlist.offer(customerName);
+    }
+
+    public String popNextFromWaitlist() {
+        return waitlist.poll();
+    }
+
     public void rentVehicle(){
         isRented = true;
     }

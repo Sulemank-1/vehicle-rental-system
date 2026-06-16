@@ -4,12 +4,12 @@ import java.util.*;
 public class FleetManager {
     //Data Fields
     private String agencyName;
-    private ArrayList<Vehicle> fleet;
+    private Map<String, Vehicle> fleet;
 
     //Constructor
     public FleetManager(String agencyName){
         this.agencyName = agencyName;
-        fleet = new ArrayList<>();
+        fleet = new HashMap<>();
     }
 
     //Getters
@@ -24,26 +24,27 @@ public class FleetManager {
 
     //Methods
     public void addVehicle(Vehicle v){
-        for (Vehicle vehicle: fleet)
-            if (vehicle.getLicensePlate().trim().equalsIgnoreCase(v.getLicensePlate())){
-                System.out.println("Duplicate Licence Plate");
-                return;
-            }
-        fleet.add(v);
+        String standardizedPlate = v.getLicensePlate().toLowerCase().trim();
+
+        if (fleet.containsKey(standardizedPlate)){
+            System.out.println("Duplicate Licence Plate");
+            return;
+        }
+        fleet.put(v.getLicensePlate(), v);
     }
 
     public boolean processRental(String plate, String customerName) {
-        for (Vehicle vehicle : fleet) {
-            if (vehicle.getLicensePlate().trim().equalsIgnoreCase(plate.trim())) {
-                if (!vehicle.isRented()) {
-                    vehicle.rentVehicle();
-                    System.out.println("Success: Vehicle " + plate.toUpperCase() + " has been checked out.");
-                    return true;
-                } else {
-                    vehicle.addToWaitlist(customerName);
-                    System.out.println("Notice: " + plate.toUpperCase() + " is currently occupied.");
-                    return false;
-                }
+        String standardizedPlate = plate.toLowerCase().trim();
+        if (fleet.containsKey(standardizedPlate)) {
+            Vehicle vehicle = fleet.get(standardizedPlate);
+            if (!vehicle.isRented()) {
+                vehicle.rentVehicle();
+                System.out.println("Success: Vehicle " + plate.toUpperCase() + " has been checked out.");
+                return true;
+            } else {
+                vehicle.addToWaitlist(customerName);
+                System.out.println("Notice: " + plate.toUpperCase() + " is currently occupied.");
+                return false;
             }
         }
         System.out.println("License plate not found in fleet records.");
@@ -51,26 +52,24 @@ public class FleetManager {
     }
 
     public boolean processReturn(String plate) {
-        for (Vehicle vehicle : fleet) {
-            if (vehicle.getLicensePlate().trim().equalsIgnoreCase(plate.trim())) {
-                if (vehicle.isRented()) {
+        String standardizedPlate = plate.toLowerCase().trim();
+        if (fleet.containsKey(standardizedPlate)) {
+            Vehicle vehicle = fleet.get(standardizedPlate);
+            if (vehicle.isRented()) {
+                if (!vehicle.getWaitlist().isEmpty()) {
+                    String nextCustomer = vehicle.popNextFromWaitlist();
+                    System.out.println("Vehicle returned");
+                    System.out.println("WAITLIST ALERT: Automatically assigning vehicle to next customer in line: " + nextCustomer);
+                    System.out.println("Remaining customers in queue: " + vehicle.getWaitlist().size());
+                } else {
                     vehicle.returnVehicle();
                     System.out.println("Vehicle returned");
-
-                    if (!vehicle.getWaitlist().isEmpty()) {
-                        String nextCustomer = vehicle.popNextFromWaitlist();
-                        System.out.println("WAITLIST ALERT: Automatically assigning vehicle to next customer in line:" +
-                                " " + nextCustomer);
-                        System.out.println("Remaining customers in queue: " + vehicle.getWaitlist().size());
-                    } else {
-                        vehicle.returnVehicle();
-                        System.out.println("Vehicle status updated to Available.");
-                    }
-                    return true;
-                } else {
-                    System.out.println("Vehicle is not rented out.");
-                    return false;
+                    System.out.println("Vehicle status updated to Available.");
                 }
+                return true;
+            } else {
+                System.out.println("Vehicle is not currently checked out.");
+                return false;
             }
         }
         System.out.println("License plate not found in fleet records.");
@@ -79,14 +78,14 @@ public class FleetManager {
 
     public double calculateTotalFleetValue(){
         double sum = 0.0;
-        for (Vehicle vehicle: fleet)
+        for (Vehicle vehicle: fleet.values())
             if (vehicle.isRented())
                 sum += vehicle.getDailyRate();
         return sum;
     }
 
     public void displayFleetStatus(){
-        for (Vehicle vehicle: fleet)
+        for (Vehicle vehicle: fleet.values())
             System.out.println(vehicle);
     }
 
